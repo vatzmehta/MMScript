@@ -121,6 +121,9 @@ def parse_kvb_statement(input_file):
                     amount = float(credit)
                     trans_type = 'Income'
 
+                category = categorize_transaction(description)
+                subcategory = get_subcategory(category, description)
+
                 # Process and add to transactions list
                 transactions.append({
                     'transaction_date': datetime.strptime(trans_date, '%d-%m-%Y %H:%M:%S').strftime('%d/%m/%Y'),
@@ -128,7 +131,8 @@ def parse_kvb_statement(input_file):
                     'ref_no': "", #row[3],
                     'amount': amount,
                     'type': trans_type,
-                    'category': categorize_transaction(description),
+                    'category': category,
+                    'subcategory': subcategory,
                     'account': 'KVB'  # Default account name
                 })
         except Exception as e:
@@ -204,7 +208,7 @@ def get_subcategory(category, description):
         'Transportation': [
             ('Taxi', ['uber', 'ola', 'taxi', 'cab']),
             ('Subway/Train', ['train', 'subway', 'metro', 'rail', 'irctc']),
-            ('Bike', ['bike', 'cycle', 'bicycle']),
+            ('Bike', ['bike', 'cycle', 'bicycle', 'fuel']),
             ('Parcel/Courier', ['parcel', 'courier', 'delivery']),
             ('Car', ['car', 'drive']),
             ('Flight ✈️', ['flight', 'air', 'airport']),
