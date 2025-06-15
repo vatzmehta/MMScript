@@ -1,6 +1,6 @@
-# kotak_to_realbyte_converter
+# MMScript
 
-A simple tool to convert Kotak Bank statement CSV files into the Realbyte Money Manager format.
+A simple tool to convert Kotak/Kvb Bank statement CSV files into the Realbyte Money Manager format.
 
 ## Features
 
