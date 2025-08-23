@@ -13,7 +13,6 @@ A simple tool to convert Bank statement CSV files into the Realbyte Money Manage
 - Support for 
     -   Kotak Bank
     -   Karur Vysya Bank (KVB)
-    -   Bank of Baroda (Bob)
     -   Axis Credit Card Statement
 
 ## Usage
