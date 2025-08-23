@@ -1,0 +1,20 @@
+"",,Account Statement
+XXXX  YYYY
+"Address1",,,,Cust. Reln. No.,XXXXXXXX
+"Address2, ",,,,Account No.,1234567890
+"City, State ",,,,Period,From 15/06/2025 To 14/08/2025
+City,,,,Currency,INR
+State,,,,Branch,M G ROAD BRANCH
+India,,,,Nomination Regd,Y
+123123,,,,Nominee Name,XXXX XXXX
+"",,,,Joint Holder(S),
+"",,,,IFSC,KKBK0000000
+"",,,,MICR,1234567890
+""
+Sl. No.,Transaction Date,Value Date,Description,Chq / Ref No.,Amount,Dr / Cr,Balance,Dr / Cr
+1,15-06-2025 11:22:36,19-06-2025,UPI/Taaza Thindi/1234567890/Food out,UPI-1234567890,138.00,DR,"3,089.59",CR
+2,18-06-2025 22:49:26,18-06-2025,UPI/A PERFECT COFFE/1234567890/Coffee,UPI-1234567890,50.00,DR,"3,039.59",CR
+3,01-07-2025 07:45:49,30-06-2025,Int.Pd:5013045147:01-04-2025 to 30-06-2025,,286.00,CR,"1,235.32",CR
+Closing balance,"as on 14/08/2025   INR 29,121.86"
+You may call our 24-hour Customer Contact Centre at our number 1860 266 2666
+"Write to us at Customer Contact Centre. Kotak Mahindra Bank Ltd. Post Box Number 16344, Mumbai 400 013"
