@@ -14,7 +14,7 @@ A simple tool to convert Kotak/Kvb Bank statement CSV files into the Realbyte Mo
 2. Run the converter:
 
     ```bash
-    py kotak_to_realbyte_converter.py input.csv output.csv
+    py csv_to_realbyte.py input.csv output.csv kotak
     ```
 
 3. Import the `output.csv` into Realbyte Money Manager.
@@ -26,11 +26,6 @@ A simple tool to convert Kotak/Kvb Bank statement CSV files into the Realbyte Mo
 ## Installation
 
 Clone the repository:
-
-```bash
-git clone https://github.com/yourusername/kotak_to_realbyte_converter.git
-cd kotak_to_realbyte_converter
-```
 
 ## Disclaimer
 
