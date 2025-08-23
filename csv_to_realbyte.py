@@ -143,6 +143,69 @@ def parse_kvb_statement(input_file):
 
     return transactions
 
+def parse_axis_statement(input_file):
+    """
+    Parse Axis Bank statement text file and extract transaction data
+    """
+    with open(input_file, 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+
+    transactions = []
+    # Regex to capture date, description, and amounts with Dr/Cr identifiers
+    # It handles cases with one or two amounts on the same line.
+    pattern = re.compile(r"(\d{2}/\d{2}/\d{4})\s+(.*?)\s+([\d,]+\.\d{2})\s+(Dr|Cr)(?:\s+([\d,]+\.\d{2})\s+(Dr|Cr))?")
+
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+
+        match = pattern.search(line)
+        if match:
+            date_str, description, amount1_str, type1, amount2_str, type2 = match.groups()
+            
+            # Clean up description
+            description = description.strip()
+
+            # First amount
+            amount1 = float(amount1_str.replace(',', ''))
+            if amount1 > 0:
+                category1 = categorize_transaction(description)
+                subcategory1 = get_subcategory(category1, description)
+                transactions.append({
+                    'transaction_date': datetime.strptime(date_str, '%d/%m/%Y').strftime('%d/%m/%Y'),
+                    'description': description,
+                    'ref_no': '',
+                    'amount': amount1,
+                    'type': 'Expense' if type1 == 'Dr' else 'Income',
+                    'category': category1,
+                    'subcategory': subcategory1,
+                    'account': 'Axis Credit Card'
+                })
+
+            # Second amount, if it exists
+            if amount2_str:
+                amount2 = float(amount2_str.replace(',', ''))
+                if amount2 > 0:
+                    # For cashback, the description is often related to the primary transaction
+                    desc2 = "Cashback for " + description if type2 == 'Cr' else description
+                    category2 = categorize_transaction(desc2)
+                    subcategory2 = get_subcategory(category2, desc2)
+                    transactions.append({
+                        'transaction_date': datetime.strptime(date_str, '%d/%m/%Y').strftime('%d/%m/%Y'),
+                        'description': desc2,
+                        'ref_no': '',
+                        'amount': amount2,
+                        'type': 'Expense' if type2 == 'Dr' else 'Income',
+                        'category': category2,
+                        'subcategory': subcategory2,
+                        'account': 'Axis Credit Card'
+                    })
+        else:
+            print(f"Warning: Could not parse line: {line}")
+
+    return transactions
+
 def categorize_transaction(description):
     """
     Basic automatic categorization based on description keywords
@@ -389,8 +452,8 @@ def create_realbyte_import_file(transactions, output_file):
     print(f"Successfully converted and saved to {output_file}")
 
 def main():
-    if len(sys.argv) < 3:
-        print("Usage: python kotak_to_realbyte.py <input_kotak_file> <output_realbyte_file>")
+    if len(sys.argv) < 4:
+        print("Usage: python csv_to_realbyte.py <input_file> <output_file> <bank>")
         return
     
     input_file = sys.argv[1]
@@ -399,11 +462,14 @@ def main():
 
     print(f"Processing {input_file} for bank: {bank}")
     
+    transactions = None
     # Process the statement
     if bank == 'kotak':
         transactions = parse_kotak_statement(input_file)
     elif bank == 'kvb':
         transactions = parse_kvb_statement(input_file)
+    elif bank == 'axis':
+        transactions = parse_axis_statement(input_file)
     
     if transactions:
         create_realbyte_import_file(transactions, output_file)
