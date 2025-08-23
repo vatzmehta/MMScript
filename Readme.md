@@ -36,4 +36,4 @@ Clone the repository and run locally
 
 ## Disclaimer
 
-This tool is not affiliated with Kotak Bank or Realbyte. Use at your own risk.
+This tool is not affiliated with Any Bank or Realbyte. Use at your own risk.
