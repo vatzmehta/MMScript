@@ -218,21 +218,20 @@ def categorize_transaction(description):
         'Transportation': ['uber', 'ola', 'cab', 'taxi', 'auto', 'petrol', 'fuel', 'railways', 'irctc', 'train', 'fuels', 'rail', 'emission test', 'number plate', 'parking', 'metro', 'bus', 'bmtc', 'zoomcar', 'car rental'],
         'Culture': ['movie', 'netflix', 'prime', 'hotstar', 'subscription', 'entertainment', 'theatre', 'concert', 'show', 'cinema', 'shetty cinemas', 'badminton', 'sports', 'gaming'],
         'Household': ['bill', 'electricity', 'phone', 'mobile', 'recharge', 'dth', 'broadband', 'internet', 'wifi', 'maintenance', 'repair', 'rent', 'cleaning', 'appliance', 'furniture'],
-        'Health': ['medical', 'hospital', 'doctor', 'pharmacy', 'medicine', 'health', 'clinic', 'consultation', 'test'],
+        'Health': ['medical', 'hospital', 'doctor', 'pharmacy', 'medicine', 'health', 'clinic', 'consultation', 'test', 'optical', 'lenskart', 'specs', 'apollo'],
         'Education': ['course', 'college', 'school', 'fees', 'tuition', 'education', 'books', 'stationery', 'class', 'study'],
-        'Investment': ['investment', 'mutual fund', 'stocks', 'shares', 'sip', 'trading', 'deposit'],
+        'Investment': ['investment', 'mutual fund', 'stocks', 'shares', 'sip', 'trading', 'deposit', 'zerodha'],
         'Apparel': ['clothes', 'clothing', 'fashion', 'dress', 'shirt', 'pants', 'shoes', 'wardrobe', 'accessories'],
         'Beauty': ['salon', 'haircut', 'spa', 'cosmetics', 'grooming', 'beauty'],
         'Services': ['broker', 'agent', 'service', 'consultation', 'professional', 'fees'],
         'Rent': ['rent', 'house rent', 'room rent', 'deposit'],
         'Social Life': ['party', 'hangout', 'friends', 'club', 'social', 'gathering', 'treat', 'meet', 'couple meet', 'date'],
-        'Investment': ['zerodha', 'trading', 'stocks', 'mutual fund', 'investment', 'broker'],
         'Shopping': ['amazon', 'flipkart', 'online shopping', 'retail', 'mart', 'store', 'bazaar'],
         'Digital': ['aws', 'cloud', 'subscription', 'digital', 'online service', 'jio', 'airtel', 'phone bill'],
         'Donation': ['donation', 'charity', 'trust', 'temple', 'religious'],
-        'Health': ['medical', 'hospital', 'doctor', 'pharmacy', 'medicine', 'health', 'optical', 'lenskart', 'specs', 'apollo'],
         'Interests': ['premat', 'hobby', 'collection'],
-        'Gift': ['gift', 'present', 'gifts', 'birthday', 'anniversary', 'celebration', 'rakhi', 'festival']
+        'Gift': ['gift', 'present', 'gifts', 'birthday', 'anniversary', 'celebration', 'rakhi', 'festival'],
+        'Interest': ['int.pd', 'interest', 'int paid', 'int. paid', 'int credited', 'interest credited']
     }
     
     # Try to match description with categories
