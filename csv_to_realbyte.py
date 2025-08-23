@@ -76,6 +76,7 @@ def parse_kvb_statement(input_file):
     Parse KVB Bank statement CSV file and extract transaction data
     """
     # Read the entire file content
+    print(f"Reading KVB statement from {input_file}")
     with open(input_file, 'r', encoding='utf-8') as file:
         content = file.readlines()
 
@@ -150,16 +151,25 @@ def categorize_transaction(description):
     
     # Define category mapping based on keywords
     categories = {
-        'Food': ['restaurant', 'food', 'swiggy', 'zomato', 'cafe', 'dine', 'food out','water', 'juice','hotel','milk','NEIGHBOURHOOD V'],
-        'Transportation': ['uber', 'ola', 'cab', 'taxi', 'auto', 'petrol', 'fuel', 'railways', 'irctc', 'train', 'fuels', 'rail'],
-        'Culture': ['movie', 'netflix', 'prime', 'hotstar', 'subscription'],
-        'Household': ['bill', 'electricity', 'phone', 'mobile', 'recharge', 'dth', 'broadband', 'internet'],
-        'Health': ['medical', 'hospital', 'doctor', 'pharmacy', 'medicine', 'health'],
-        'Education': ['course', 'college', 'school', 'fees', 'tuition', 'education'],
-        'Investment': ['investment', 'mutual fund', 'stocks', 'shares', 'sip'],
-        'Apparel': ['clothes', 'clothing', 'fashion', 'dress', 'shirt', 'pants', 'shoes'],
-        'Interests': ['premat'],
-        "Gift": ['gift', 'present', 'gifts', 'birthday', 'anniversary']
+        'Food': ['restaurant', 'food', 'swiggy', 'zomato', 'cafe', 'dine', 'food out', 'water', 'juice', 'hotel', 'milk', 'NEIGHBOURHOOD V', 'grocery', 'snack', 'breakfast', 'lunch', 'dinner', 'tea', 'coffee', 'ice cream', 'bakery', 'dhaba', 'thindi', 'tiffin', 'coconut', 'veggie'],
+        'Transportation': ['uber', 'ola', 'cab', 'taxi', 'auto', 'petrol', 'fuel', 'railways', 'irctc', 'train', 'fuels', 'rail', 'emission test', 'number plate', 'parking', 'metro', 'bus', 'bmtc', 'zoomcar', 'car rental'],
+        'Culture': ['movie', 'netflix', 'prime', 'hotstar', 'subscription', 'entertainment', 'theatre', 'concert', 'show', 'cinema', 'shetty cinemas', 'badminton', 'sports', 'gaming'],
+        'Household': ['bill', 'electricity', 'phone', 'mobile', 'recharge', 'dth', 'broadband', 'internet', 'wifi', 'maintenance', 'repair', 'rent', 'cleaning', 'appliance', 'furniture'],
+        'Health': ['medical', 'hospital', 'doctor', 'pharmacy', 'medicine', 'health', 'clinic', 'consultation', 'test'],
+        'Education': ['course', 'college', 'school', 'fees', 'tuition', 'education', 'books', 'stationery', 'class', 'study'],
+        'Investment': ['investment', 'mutual fund', 'stocks', 'shares', 'sip', 'trading', 'deposit'],
+        'Apparel': ['clothes', 'clothing', 'fashion', 'dress', 'shirt', 'pants', 'shoes', 'wardrobe', 'accessories'],
+        'Beauty': ['salon', 'haircut', 'spa', 'cosmetics', 'grooming', 'beauty'],
+        'Services': ['broker', 'agent', 'service', 'consultation', 'professional', 'fees'],
+        'Rent': ['rent', 'house rent', 'room rent', 'deposit'],
+        'Social Life': ['party', 'hangout', 'friends', 'club', 'social', 'gathering', 'treat', 'meet', 'couple meet', 'date'],
+        'Investment': ['zerodha', 'trading', 'stocks', 'mutual fund', 'investment', 'broker'],
+        'Shopping': ['amazon', 'flipkart', 'online shopping', 'retail', 'mart', 'store', 'bazaar'],
+        'Digital': ['aws', 'cloud', 'subscription', 'digital', 'online service', 'jio', 'airtel', 'phone bill'],
+        'Donation': ['donation', 'charity', 'trust', 'temple', 'religious'],
+        'Health': ['medical', 'hospital', 'doctor', 'pharmacy', 'medicine', 'health', 'optical', 'lenskart', 'specs', 'apollo'],
+        'Interests': ['premat', 'hobby', 'collection'],
+        'Gift': ['gift', 'present', 'gifts', 'birthday', 'anniversary', 'celebration', 'rakhi', 'festival']
     }
     
     # Try to match description with categories
@@ -179,41 +189,78 @@ def get_subcategory(category, description):
     description = description.lower()
     subcategories = {
         'Household': [
-            ('Maid', ['maid']),
-            ('Furniture', ['furniture', 'sofa', 'table', 'chair', 'bed']),
-            ('Kitchen', ['kitchen', 'utensil', 'cooker', 'mixer']),
-            ('Phone Bill', ['phone', 'mobile', 'recharge']),
+            ('Maid', ['maid', 'house help', 'cleaning']),
+            ('Furniture', ['furniture', 'sofa', 'table', 'chair', 'bed', 'shelf', 'cabinet']),
+            ('Kitchen', ['kitchen', 'utensil', 'cooker', 'mixer', 'plates', 'cups']),
+            ('Phone Bill', ['phone', 'mobile', 'recharge', 'postpaid', 'prepaid']),
             ('Other Essentials', ['essential', 'grocery', 'daily', 'toiletries']),
-            ('Appliances', ['appliance', 'fridge', 'ac', 'microwave', 'washing machine']),
-            ('Internet', ['internet', 'broadband', 'wifi']),
-            ('DTH', ['dth', 'set top']),
+            ('Appliances', ['appliance', 'fridge', 'ac', 'microwave', 'washing machine', 'fan', 'cooler']),
+            ('Internet', ['internet', 'broadband', 'wifi', 'data', 'connection']),
+            ('DTH', ['dth', 'set top', 'cable', 'television']),
             ('Mom hyd', ['mom hyd']),
-            ('Ironing', ['iron']),
-            ('Maintenance', ['maintenance', 'repair']),
-            ('Cook', ['cook']),
-            ('Toiletries', ['toiletries', 'soap', 'shampoo', 'toothpaste']),
-            ('Painting', ['paint', 'painting']),
-            ('Electricity', ['electricity', 'power']),
-            ('Packers and movers', ['packers', 'movers', 'moving']),
-            ('Home Loan', ['home loan', 'loan'])
+            ('Ironing', ['iron', 'press', 'laundry']),
+            ('Maintenance', ['maintenance', 'repair', 'fix', 'service']),
+            ('Cook', ['cook', 'chef', 'cooking']),
+            ('Toiletries', ['toiletries', 'soap', 'shampoo', 'toothpaste', 'personal care']),
+            ('Painting', ['paint', 'painting', 'wall', 'decor']),
+            ('Electricity', ['electricity', 'power', 'electric', 'current']),
+            ('Packers and movers', ['packers', 'movers', 'moving', 'relocation', 'shifting']),
+            ('Home Loan', ['home loan', 'loan', 'emi', 'mortgage']),
+            ('Rent', ['rent', 'deposit', 'advance', 'lease'])
         ],
         'Food': [
-            ('Vegis/Groceries', ['grocery', 'vegetable', 'vegi', 'groceries', 'fruit', 'milk', 'water']),
-            ('Eating out', ['restaurant', 'swiggy', 'zomato', 'cafe', 'dine', 'hotel', 'food out', 'eating out']),
-            ('Beverages', ['beverage', 'juice', 'coffee', 'tea', 'drink', 'beverages']),
-            ('Snack', ['snack', 'chips', 'namkeen', 'biscuit']),
-            ('Lunch', ['lunch']),
-            ('Dinner', ['dinner'])
+            ('Groceries', ['grocery', 'vegetable', 'vegi', 'groceries', 'fruit', 'milk', 'water', 'provisions', 'mart', 'store']),
+            ('Eating out', ['restaurant', 'swiggy', 'zomato', 'cafe', 'dine', 'hotel', 'food out', 'eating out', 'takeaway']),
+            ('Beverages', ['beverage', 'juice', 'coffee', 'tea', 'drink', 'beverages', 'soda', 'soft drink']),
+            ('Snack', ['snack', 'chips', 'namkeen', 'biscuit', 'cookie', 'bakery']),
+            ('Lunch', ['lunch', 'afternoon meal', 'tiffin']),
+            ('Dinner', ['dinner', 'night meal', 'supper']),
+            ('Breakfast', ['breakfast', 'morning meal', 'toast']),
+            ('Food Delivery', ['delivery', 'online order', 'swiggy', 'zomato']),
+            ('Street Food', ['street food', 'chaat', 'roadside', 'vendor'])
         ],
         'Transportation': [
-            ('Taxi', ['uber', 'ola', 'taxi', 'cab']),
-            ('Subway/Train', ['train', 'subway', 'metro', 'rail', 'irctc']),
-            ('Bike', ['bike', 'cycle', 'bicycle', 'fuel']),
-            ('Parcel/Courier', ['parcel', 'courier', 'delivery']),
-            ('Car', ['car', 'drive']),
-            ('Flight ✈️', ['flight', 'air', 'airport']),
-            ('Bus', ['bus']),
-            ('Fine', ['fine', 'penalty'])
+            ('Taxi', ['uber', 'ola', 'taxi', 'cab', 'ride', 'hire']),
+            ('Subway/Train', ['train', 'subway', 'metro', 'rail', 'irctc', 'railway']),
+            ('Bike', ['bike', 'cycle', 'bicycle', 'fuel', 'petrol', 'diesel']),
+            ('Parcel/Courier', ['parcel', 'courier', 'delivery', 'shipping', 'post']),
+            ('Car', ['car', 'drive', 'parking', 'toll', 'fastag']),
+            ('Flight', ['flight', 'air', 'airport', 'airline', 'plane']),
+            ('Bus', ['bus', 'transport', 'ST', 'roadways']),
+            ('Vehicle Service', ['service', 'repair', 'maintenance', 'emission test', 'number plate']),
+            ('Fine', ['fine', 'penalty', 'challan', 'ticket'])
+        ],
+        'Beauty': [
+            ('Salon', ['salon', 'haircut', 'spa', 'massage', 'parlor', 'unisex']),
+            ('Cosmetics', ['cosmetics', 'makeup', 'beauty products', 'skincare']),
+            ('Personal Care', ['personal care', 'grooming', 'hygiene']),
+            ('Beauty Services', ['facial', 'waxing', 'threading', 'manicure', 'pedicure']),
+            ('Optical', ['lenskart', 'specs', 'glasses', 'contact lens', 'eye care'])
+        ],
+        'Services': [
+            ('Professional', ['professional', 'consultant', 'advisor', 'expert']),
+            ('Broker', ['broker', 'agent', 'dealer', 'intermediary']),
+            ('Legal', ['legal', 'lawyer', 'advocate', 'notary']),
+            ('Documentation', ['document', 'certificate', 'attestation']),
+            ('Home Services', ['repair', 'plumber', 'electrician', 'carpenter'])
+        ],
+        'Investment': [
+            ('Trading', ['zerodha', 'trading', 'stocks', 'shares']),
+            ('Mutual Funds', ['mutual fund', 'sip', 'investment']),
+            ('Fixed Deposits', ['fd', 'fixed deposit', 'deposit']),
+            ('Other Investments', ['gold', 'bonds', 'crypto'])
+        ],
+        'Digital': [
+            ('Cloud Services', ['aws', 'cloud', 'server', 'hosting']),
+            ('Subscriptions', ['subscription', 'netflix', 'prime', 'hotstar']),
+            ('Mobile Services', ['jio', 'airtel', 'vodafone', 'phone bill']),
+            ('Apps', ['app purchase', 'playstore', 'appstore'])
+        ],
+        'Rent': [
+            ('House Rent', ['house rent', 'home rent', 'flat rent']),
+            ('Deposit', ['deposit', 'advance', 'security']),
+            ('Maintenance', ['maintenance', 'society', 'association']),
+            ('Utilities', ['utility', 'electricity', 'water', 'gas'])
         ],
         'Beauty': [
             ('Beauty', ['beauty', 'salon', 'spa']),
@@ -349,6 +396,8 @@ def main():
     input_file = sys.argv[1]
     output_file = sys.argv[2]
     bank = sys.argv[3]
+
+    print(f"Processing {input_file} for bank: {bank}")
     
     # Process the statement
     if bank == 'kotak':
