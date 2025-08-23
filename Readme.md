@@ -1,4 +1,4 @@
-# Realbyte MoneyMager Import Script
+# Realbyte MoneyManager Import Script
 
 A simple tool to convert Bank statement CSV files into the Realbyte Money Manager Bulk Import format.
 
