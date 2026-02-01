@@ -143,6 +143,97 @@ def parse_kvb_statement(input_file):
 
     return transactions
 
+def parse_equitas_statement(input_file):
+    """
+    Parse Equitas Small Finance Bank statement CSV file and extract transaction data
+    """
+    # Read entire file content
+    with open(input_file, 'r', encoding='utf-8') as file:
+        content = file.read()
+    
+    # Find the line where transaction details start (look for "Narration" to identify header)
+    transaction_start = -1
+    lines = content.split('\n')
+    for i, line in enumerate(lines):
+        if 'Narration' in line and 'Date' in line:
+            transaction_start = i
+            break
+    
+    if transaction_start == -1:
+        print("Error: Could not find transaction details header in the statement")
+        return None
+    
+    # Create a list to store transaction data
+    transactions = []
+    
+    # Use pandas to read from the header line onwards to handle complex CSV properly
+    from io import StringIO
+    csv_content = '\n'.join(lines[transaction_start:])
+    
+    try:
+        df = pd.read_csv(StringIO(csv_content), skipinitialspace=True)
+        
+        # Clean up column names (remove extra whitespace and newlines)
+        df.columns = df.columns.str.replace('\n', ' ').str.strip()
+        
+        # Process each row
+        for idx, row in df.iterrows():
+            try:
+                # Skip rows with NaN dates or empty dates
+                if pd.isna(row.get('Date')) or row.get('Date') == '*** End of the Statement ***':
+                    continue
+                
+                trans_date_str = str(row.get('Date', '')).strip()
+                if not trans_date_str or trans_date_str.startswith('***'):
+                    continue
+                
+                # Parse the date
+                trans_date = datetime.strptime(trans_date_str, '%d-%b-%Y').strftime('%d/%m/%Y')
+                
+                # Extract fields
+                narration = str(row.get('Narration', '')).strip()
+                ref_no = str(row.get('Reference No. / Cheque No.', '')).strip()
+                
+                # Handle withdrawal and deposit columns (which may have newlines in header)
+                withdrawal_val = str(row.get('Withdrawal\nINR', row.get('Withdrawal INR', ''))).strip()
+                deposit_val = str(row.get('Deposit\nINR', row.get('Deposit INR', ''))).strip()
+                
+                # Clean currency values
+                withdrawal = float(withdrawal_val.replace(',', '')) if withdrawal_val and withdrawal_val != 'nan' else 0.0
+                deposit = float(deposit_val.replace(',', '')) if deposit_val and deposit_val != 'nan' else 0.0
+                
+                # Determine transaction type and amount
+                if withdrawal > 0:
+                    amount = withdrawal
+                    trans_type = 'Expense'
+                elif deposit > 0:
+                    amount = deposit
+                    trans_type = 'Income'
+                else:
+                    continue
+                
+                category = categorize_transaction(narration)
+                subcategory = get_subcategory(category, narration)
+                
+                transactions.append({
+                    'transaction_date': trans_date,
+                    'description': narration,
+                    'ref_no': ref_no,
+                    'amount': amount,
+                    'type': trans_type,
+                    'category': category,
+                    'subcategory': subcategory,
+                    'account': 'Equitas'
+                })
+            except Exception as e:
+                print(f"Error processing row {idx}: {e}")
+                continue
+    except Exception as e:
+        print(f"Error reading CSV: {e}")
+        return None
+    
+    return transactions
+
 def parse_axis_statement(input_file):
     """
     Parse Axis Bank statement text file and extract transaction data
@@ -214,7 +305,7 @@ def categorize_transaction(description):
     
     # Define category mapping based on keywords
     categories = {
-        'Food': ['restaurant', 'food', 'swiggy', 'zomato', 'cafe', 'dine', 'food out', 'water', 'juice', 'hotel', 'milk', 'NEIGHBOURHOOD V', 'grocery', 'snack', 'breakfast', 'lunch', 'dinner', 'tea', 'coffee', 'ice cream', 'bakery', 'dhaba', 'thindi', 'tiffin', 'coconut', 'veggie'],
+        'Food': ['restaurant', 'food', 'swiggy', 'zomato', 'cafe', 'dine', 'food out', 'water', 'juice', 'hotel', 'milk', 'NEIGHBOURHOOD V', 'grocery', 'snack', 'breakfast', 'lunch', 'dinner', 'tea', 'coffee', 'ice cream', 'bakery', 'dhaba', 'thindi', 'tiffin', 'coconut', 'veggie','Groceries'],
         'Transportation': ['uber', 'ola', 'cab', 'taxi', 'auto', 'petrol', 'fuel', 'railways', 'irctc', 'train', 'fuels', 'rail', 'emission test', 'number plate', 'parking', 'metro', 'bus', 'bmtc', 'zoomcar', 'car rental'],
         'Culture': ['movie', 'netflix', 'prime', 'hotstar', 'subscription', 'entertainment', 'theatre', 'concert', 'show', 'cinema', 'shetty cinemas', 'badminton', 'sports', 'gaming'],
         'Household': ['bill', 'electricity', 'phone', 'mobile', 'recharge', 'dth', 'broadband', 'internet', 'wifi', 'maintenance', 'repair', 'rent', 'cleaning', 'appliance', 'furniture'],
@@ -229,9 +320,9 @@ def categorize_transaction(description):
         'Shopping': ['amazon', 'flipkart', 'online shopping', 'retail', 'mart', 'store', 'bazaar'],
         'Digital': ['aws', 'cloud', 'subscription', 'digital', 'online service', 'jio', 'airtel', 'phone bill'],
         'Donation': ['donation', 'charity', 'trust', 'temple', 'religious'],
-        'Interests': ['premat', 'hobby', 'collection'],
+        'Interests': ['premat'],
         'Gift': ['gift', 'present', 'gifts', 'birthday', 'anniversary', 'celebration', 'rakhi', 'festival'],
-        'Interest': ['int.pd', 'interest', 'int paid', 'int. paid', 'int credited', 'interest credited']
+        'Interests': ['int.pd', 'interest', 'int paid', 'int. paid', 'int credited', 'interest credited']
     }
     
     # Try to match description with categories
@@ -271,7 +362,7 @@ def get_subcategory(category, description):
             ('Rent', ['rent', 'deposit', 'advance', 'lease'])
         ],
         'Food': [
-            ('Groceries', ['grocery', 'vegetable', 'vegi', 'groceries', 'fruit', 'milk', 'water', 'provisions', 'mart', 'store']),
+            ('Vegis/Groceries', ['grocery', 'Groceries','vegetable', 'vegi', 'groceries', 'fruit', 'milk', 'water', 'provisions', 'mart', 'store']),
             ('Eating out', ['restaurant', 'swiggy', 'zomato', 'cafe', 'dine', 'hotel', 'food out', 'eating out', 'takeaway']),
             ('Beverages', ['beverage', 'juice', 'coffee', 'tea', 'drink', 'beverages', 'soda', 'soft drink']),
             ('Snack', ['snack', 'chips', 'namkeen', 'biscuit', 'cookie', 'bakery']),
@@ -469,6 +560,8 @@ def main():
         transactions = parse_kvb_statement(input_file)
     elif bank == 'axis':
         transactions = parse_axis_statement(input_file)
+    elif bank == 'equitas':
+        transactions = parse_equitas_statement(input_file)
     
     if transactions:
         create_realbyte_import_file(transactions, output_file)
